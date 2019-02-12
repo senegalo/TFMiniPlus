@@ -12,7 +12,7 @@ void TFMiniPlus::begin(Stream* serial) {
 }
 
 bool TFMiniPlus::readData() {
-	uint8_t buffer[];
+	uint8_t buffer[9];
 
 	//skip to the first data frame header
 	TFMiniPlus::skipToFrameHeader(DATA_FRAME_MARKER);
@@ -158,8 +158,7 @@ bool TFMiniPlus::saveSettings() {
 	return false;
 }
 
-TFMiniPlus::TFMiniPlus() {
-}
+TFMiniPlus::TFMiniPlus() {}
 
 bool TFMiniPlus::validateChecksum(uint8_t dataBuffer[], int length) {
 	uint8_t sum = TFMiniPlus::generateChecksum(dataBuffer, length - 2);
@@ -189,7 +188,7 @@ bool TFMiniPlus::readCommandResponse(uint8_t buffer[]) {
 	stream->readBytes(buffer, length - 2);
 
 	//reconstruct the frame for checksum
-	uint8_t frame[length] = { CMD_FRAME_MARKER, length };
+	uint8_t frame[MAX_CMD_RESPONSE_LENGTH] = { CMD_FRAME_MARKER, length };
 	for (int i = 2; i < length; i++) {
 		frame[i] = buffer[i - 2];
 	}
@@ -209,7 +208,7 @@ uint8_t TFMiniPlus::generateChecksum(uint8_t buffer[], int length) {
 void TFMiniPlus::skipToFrameHeader(uint8_t frameHeader) {
 	uint8_t currentChar = 0x00;
 	while (currentChar != frameHeader) {
-		currentChar = stream->read();
+		stream->readBytes(&currentChar, 1);
 	}
 }
 

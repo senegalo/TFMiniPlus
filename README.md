@@ -2,24 +2,16 @@
 
 Readme and documentation is WIP
 
-Library is currently being developed under the initial-api branch.
+## Project install
+Library is developed using Platform IO using plugin for the Visual Code IDE. For setup instruction follow the tutorial
+[here](http://docs.platformio.org/en/stable/ide/pioide.html#vscode)
 
-Current state is:
+## Hardware Documentation
 
-* can read the distance / sensor tempreture / signal strength from the device 
-* can Request the firmware version from the device
-* can reset the system
-* can set the frame rate
-* can trigger manual detection
-* can be able set the output format between milimeter or centimeters 
-* can set the baud rate
-* can enable / disable the device
-* can restore to factory settings
-* can save the configuration onto the device
+The hardware documentation is in a pdf file in the documentation folder.
 
-What needs to be done to consider the api complete is:
+## Library Location
 
-* Several optimization parts in the code
-* change the setEnabled method to take a boolean instead of a constant
-* create the keywords file
-* package for arduino 
+Currently the library resides in the lib/tfmini folder and treated as a static library for testing.
+
+Later on when all the api functionalities are tested it will be extracted and packaged.
