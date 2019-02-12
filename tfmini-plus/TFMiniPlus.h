@@ -16,6 +16,7 @@
 #endif
 
 #define DATA_FRAME_MARKER 0x59
+#define DATA_FRAME_LENGTH 9
 #define CMD_FRAME_MARKER 0x5A
 #define MEASUREMENT_CM 0x0165
 #define MEASUREMENT_PIXHAWL 0x0266
@@ -43,12 +44,13 @@ public:
 private:
 	uint8_t readDataBuffer[9];
 	Stream* stream;
-	bool dataFrameReady();
 	bool validateChecksum(uint8_t buffer[], int length);
 	uint8_t generateChecksum(uint8_t buffer[], int length);
 	void triggerDetection();
 	void write(uint8_t buffer[], int length);
 	bool readCommandResponse(uint8_t buffer[]);
 	void skipToFrameHeader(uint8_t farameHeader);
+	uint16_t readInt16FromBuffer(uint8_t buffer[], uint8_t startIndex);
+	uint32_t readInt32FromBuffer(uint8_t buffer[], uint8_t startIndex);
 };
 
