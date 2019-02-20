@@ -26,32 +26,35 @@
 #define DISABLED 0x0167
 
 class TFMiniPlus {
+ public:
+  TFMiniPlus();
+  void begin(Stream* serial);
+  bool readData();
+  uint16_t getDistance();
+  double_t getSensorTempreture();
+  uint16_t getSensorRawTempreture();
+  uint16_t getSignalStrength();
+  String getVersion();
+  bool systemReset();
+  bool setUpdateRate(uint16_t rate);
+  bool setMeasurementTo(uint16_t measurment);
+  bool setBaudRate(uint32_t baud);
+  bool setEnabled(uint16_t state);
+  bool restoreFactorySettings();
+  bool saveSettings();
 
-public:
-	TFMiniPlus();
-	void begin(Stream* serial);
-	bool readData();
-	unsigned int getDistance();
-	unsigned int getSensorTempreture();
-	unsigned int getSignalStrength();
-	String getVersion();
-	bool systemReset();
-	bool setUpdateRate(uint16_t rate);
-	bool setMeasurementTo(uint16_t measurment);
-	bool setBaudRate(uint32_t baud);
-	bool setEnabled(uint16_t state);
-	bool restoreFactorySettings();
-	bool saveSettings();
-private:
-	uint8_t readDataBuffer[9];
-	Stream* stream;
-	bool validateChecksum(uint8_t buffer[], int length);
-	uint8_t generateChecksum(uint8_t buffer[], int length);
-	void triggerDetection();
-	void write(uint8_t buffer[], int length);
-	bool readCommandResponse(uint8_t buffer[]);
-	void skipToFrameHeader(uint8_t farameHeader);
-	uint16_t readInt16FromBuffer(uint8_t buffer[], uint8_t startIndex);
-	uint32_t readInt32FromBuffer(uint8_t buffer[], uint8_t startIndex);
+ private:
+  uint8_t readDataBuffer[9];
+  Stream* stream;
+  bool validateChecksum(uint8_t buffer[], int length);
+  uint8_t generateChecksum(uint8_t buffer[], int length);
+  void triggerDetection();
+  void write(uint8_t buffer[], int length);
+  bool readCommandResponse(uint8_t buffer[]);
+  void skipToFrameHeader(uint8_t farameHeader);
+  uint16_t readInt16FromBuffer(uint8_t buffer[], uint8_t startIndex);
+  uint32_t readInt32FromBuffer(uint8_t buffer[], uint8_t startIndex);
+  void printBuffer(uint8_t buffer[], int length);
+  void copyBuffer(uint8_t buffer1[], uint8_t buffer2[], uint8_t length);
+  void resetBuffer(uint8_t buffer[], uint8_t length);
 };
-

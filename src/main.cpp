@@ -2,23 +2,26 @@
 #include "TFMiniPlus.h"
 
 TFMiniPlus mini;
+int count = 0;
 
 void setup() {
   // put your setup code here, to run once:
+  Serial3.begin(115200);
   Serial.begin(115200);
-  //Serial.begin(9600);
-  //Serial.println("initialized Serials");
-  mini.begin(&Serial);
+  Serial.println("initialized Serials");
+  mini.begin(&Serial3);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  char a;
-  while(Serial.available() > 0){
-    a = Serial.read();
+  if (count < 300) {
+    if (mini.readData()) {
+      Serial.print("Distance: ");
+      Serial.println(mini.getDistance());
+      Serial.print("Tempreature: ");
+      Serial.println(mini.getSensorTempreture());
+      Serial.print("SignalStrength: ");
+      Serial.println(mini.getSignalStrength());
+    }
+    count++;
   }
-  /*
-  if(mini.readData()){
-    Serial.println("Distance: " + mini.getDistance());
-  }*/
 }
