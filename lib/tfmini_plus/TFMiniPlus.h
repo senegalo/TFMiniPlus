@@ -46,15 +46,15 @@ class TFMiniPlus {
  private:
   uint8_t readDataBuffer[9];
   Stream* stream;
-  bool validateChecksum(uint8_t buffer[], int length);
-  uint8_t generateChecksum(uint8_t buffer[], int length);
+  bool validateChecksum(uint8_t buffer[], uint8_t length);
+  uint8_t generateChecksum(uint8_t buffer[], uint8_t length);
   void triggerDetection();
-  void write(uint8_t buffer[], int length);
+  void write(uint8_t buffer[], uint8_t length);
   bool readCommandResponse(uint8_t buffer[]);
   void skipToFrameHeader(uint8_t farameHeader);
   uint16_t readInt16FromBuffer(uint8_t buffer[], uint8_t startIndex);
   uint32_t readInt32FromBuffer(uint8_t buffer[], uint8_t startIndex);
-  void printBuffer(uint8_t buffer[], int length);
+  void printBuffer(uint8_t buffer[], uint8_t length);
   void copyBuffer(uint8_t buffer1[], uint8_t buffer2[], uint8_t length);
   void resetBuffer(uint8_t buffer[], uint8_t length);
 };

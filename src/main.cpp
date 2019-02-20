@@ -13,15 +13,10 @@ void setup() {
 }
 
 void loop() {
-  if (count < 300) {
-    if (mini.readData()) {
-      Serial.print("Distance: ");
-      Serial.println(mini.getDistance());
-      Serial.print("Tempreature: ");
-      Serial.println(mini.getSensorTempreture());
-      Serial.print("SignalStrength: ");
-      Serial.println(mini.getSignalStrength());
-    }
+  if (count == 200) {
+    Serial.println("Version :" + mini.getVersion());
+  }
+  if (count < 202) {
     count++;
   }
 }

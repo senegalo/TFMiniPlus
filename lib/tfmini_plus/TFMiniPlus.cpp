@@ -22,7 +22,7 @@ bool TFMiniPlus::readData() {
 
   // reconstruct the frame for checksum
   uint8_t frame[DATA_FRAME_LENGTH] = {DATA_FRAME_MARKER};
-  for (int i = 1; i < DATA_FRAME_LENGTH; i++) {
+  for (uint8_t i = 1; i < DATA_FRAME_LENGTH; i++) {
     frame[i] = buffer[i - 1];
   }
   // validate data frame
@@ -52,12 +52,13 @@ uint16_t TFMiniPlus::getSignalStrength() {
 String TFMiniPlus::getVersion() {
   uint8_t buffer[4] = {CMD_FRAME_MARKER, 0x04, 0x01, 0x5F};
   uint8_t commandResponse[7];
+
   TFMiniPlus::write(buffer, 4);
   if (!TFMiniPlus::readCommandResponse(commandResponse)) {
     return "Error";
   }
-  return "Version " + String(commandResponse[5]) + "." +
-         String(commandResponse[4]) + "." + String(commandResponse[3]);
+  return String(commandResponse[5]) + "." + String(commandResponse[4]) + "." +
+         String(commandResponse[3]);
 }
 
 bool TFMiniPlus::systemReset() {
@@ -165,7 +166,7 @@ bool TFMiniPlus::saveSettings() {
 
 TFMiniPlus::TFMiniPlus() {}
 
-bool TFMiniPlus::validateChecksum(uint8_t dataBuffer[], int length) {
+bool TFMiniPlus::validateChecksum(uint8_t dataBuffer[], uint8_t length) {
   uint8_t sum = TFMiniPlus::generateChecksum(dataBuffer, length - 1);
   uint8_t checksum = dataBuffer[length - 1];
   if (sum == checksum) {
@@ -175,8 +176,8 @@ bool TFMiniPlus::validateChecksum(uint8_t dataBuffer[], int length) {
   }
 }
 
-void TFMiniPlus::write(uint8_t buffer[], int length) {
-  for (int i = 0; i < length; i++) {
+void TFMiniPlus::write(uint8_t buffer[], uint8_t length) {
+  for (uint8_t i = 0; i < length; i++) {
     stream->write(buffer[i]);
   }
 }
@@ -190,21 +191,26 @@ bool TFMiniPlus::readCommandResponse(uint8_t buffer[]) {
   stream->readBytes(&length, 1);
 
   // get the command body "all - (header and length bytes)"
-  stream->readBytes(buffer, length - 2);
+  uint8_t response[MAX_CMD_RESPONSE_LENGTH];
+  stream->readBytes(response, length - 2);
 
   // reconstruct the frame for checksum
   uint8_t frame[MAX_CMD_RESPONSE_LENGTH] = {CMD_FRAME_MARKER, length};
-  for (int i = 2; i < length; i++) {
-    frame[i] = buffer[i - 2];
+  for (uint8_t i = 2; i < length; i++) {
+    frame[i] = response[i - 2];
   }
 
   // validate command frame
-  return TFMiniPlus::validateChecksum(frame, length);
+  if (TFMiniPlus::validateChecksum(frame, length)) {
+    TFMiniPlus::copyBuffer(buffer, frame, length);
+    return true;
+  }
+  return false;
 }
 
-uint8_t TFMiniPlus::generateChecksum(uint8_t buffer[], int length) {
+uint8_t TFMiniPlus::generateChecksum(uint8_t buffer[], uint8_t length) {
   uint16_t sum = 0x0000;
-  for (int i = 0; i < length; i++) {
+  for (uint8_t i = 0; i < length; i++) {
     sum += buffer[i];
   }
   return (uint8_t)sum;
@@ -228,8 +234,8 @@ uint32_t TFMiniPlus::readInt32FromBuffer(uint8_t buffer[], uint8_t startIndex) {
          buffer[startIndex + 3];
 }
 
-void TFMiniPlus::printBuffer(uint8_t buffer[], int length) {
-  for (int i = 0; i < length; i++) {
+void TFMiniPlus::printBuffer(uint8_t buffer[], uint8_t length) {
+  for (uint8_t i = 0; i < length; i++) {
     Serial.print(buffer[i], HEX);
     Serial.print(" ");
   }
