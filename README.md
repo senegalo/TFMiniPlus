@@ -6,16 +6,20 @@ Library is currently being developed under the initial-api branch.
 
 Current state is:
 
-* Can read the distance / sensor tempreture / signal strength from the device 
-* Can Request the firmware version from the device
+* can read the distance / sensor tempreture / signal strength from the device 
+* can Request the firmware version from the device
+* can reset the system
+* can set the frame rate
+* can trigger manual detection
+* can be able set the output format between milimeter or centimeters 
+* can set the baud rate
+* can enable / disable the device
+* can restore to factory settings
+* can save the configuration onto the device
 
 What needs to be done to consider the api complete is:
 
- * Be able to reset the system
- * Be able to set the frame rate
- * Be able to trigger manual detection
- * Be able to set the output format between milimeter, centimeters or Pixhawk 
- * Be able to set the baud rate
- * Be able to enable / disable the device
- * Be able to restore to factory settings
- * Be able to save the configuration onto the device
+* Several optimization parts in the code
+* change the setEnabled method to take a boolean instead of a constant
+* create the keywords file
+* package for arduino 
