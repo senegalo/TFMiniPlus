@@ -66,7 +66,7 @@ bool TFMiniPlus::systemReset() {
   uint8_t commandResponse[5];
   TFMiniPlus::write(buffer, 4);
   if (TFMiniPlus::readCommandResponse(commandResponse) &&
-      commandResponse[4] == 0x60) {
+      commandResponse[3] == 0x00) {
     return true;
   }
   return false;
@@ -75,10 +75,10 @@ bool TFMiniPlus::systemReset() {
 bool TFMiniPlus::setUpdateRate(uint16_t rate) {
   uint8_t newRateHight = (uint8_t)(rate >> 8);
   uint8_t newRateLow = (uint8_t)rate;
-  uint8_t buffer[5] = {CMD_FRAME_MARKER, 0x06, 0x03, newRateLow, newRateHight};
-  uint8_t commandResponse[5];
-  buffer[4] = TFMiniPlus::generateChecksum(buffer, 4);
-  TFMiniPlus::write(buffer, 5);
+  uint8_t buffer[6] = {CMD_FRAME_MARKER, 0x06, 0x03, newRateLow, newRateHight};
+  uint8_t commandResponse[6];
+  buffer[6] = TFMiniPlus::generateChecksum(buffer, 5);
+  TFMiniPlus::write(buffer, 6);
   if (TFMiniPlus::readCommandResponse(commandResponse) &&
       TFMiniPlus::readInt16FromBuffer(commandResponse, 3) ==
           TFMiniPlus::readInt16FromBuffer(buffer, 3)) {
@@ -109,12 +109,12 @@ bool TFMiniPlus::setMeasurementTo(uint16_t measurement) {
 
 bool TFMiniPlus::setBaudRate(uint32_t baud) {
   uint8_t commandResponse[8];
-  uint8_t baud_b1 = (uint8_t)(baud >> 24);
-  uint8_t baud_b2 = (uint8_t)(baud >> 16);
-  uint8_t baud_b3 = (uint8_t)(baud >> 8);
-  uint8_t baud_b4 = (uint8_t)baud;
-  uint8_t buffer[8] = {CMD_FRAME_MARKER, 0x08,    0x06,   baud_b4,
-                       baud_b3,          baud_b2, baud_b1};
+  uint8_t baud_b4 = (uint8_t)(baud >> 24);
+  uint8_t baud_b3 = (uint8_t)(baud >> 16);
+  uint8_t baud_b2 = (uint8_t)(baud >> 8);
+  uint8_t baud_b1 = (uint8_t)baud;
+  uint8_t buffer[8] = {CMD_FRAME_MARKER, 0x08,    0x06,   baud_b1,
+                       baud_b2,          baud_b3, baud_b4};
   buffer[7] = TFMiniPlus::generateChecksum(buffer, 7);
   TFMiniPlus::write(buffer, 8);
   if (TFMiniPlus::readCommandResponse(commandResponse) &&
@@ -144,8 +144,7 @@ bool TFMiniPlus::restoreFactorySettings() {
   uint8_t buffer[4] = {CMD_FRAME_MARKER, 0x04, 0x10, 0x6E};
   TFMiniPlus::write(buffer, 4);
   if (TFMiniPlus::readCommandResponse(commandResponse) &&
-      TFMiniPlus::readInt16FromBuffer(commandResponse, 2) ==
-          TFMiniPlus::readInt16FromBuffer(buffer, 2)) {
+      commandResponse[3] == 0x00) {
     return true;
   }
   return false;
@@ -157,8 +156,7 @@ bool TFMiniPlus::saveSettings() {
   uint8_t buffer[4] = {CMD_FRAME_MARKER, 0x04, 0x11, 0x6F};
   TFMiniPlus::write(buffer, 4);
   if (TFMiniPlus::readCommandResponse(commandResponse) &&
-      TFMiniPlus::readInt16FromBuffer(commandResponse, 2) ==
-          TFMiniPlus::readInt16FromBuffer(buffer, 2)) {
+      commandResponse[3] == 0x00) {
     return true;
   }
   return false;
@@ -177,6 +175,8 @@ bool TFMiniPlus::validateChecksum(uint8_t dataBuffer[], uint8_t length) {
 }
 
 void TFMiniPlus::write(uint8_t buffer[], uint8_t length) {
+  Serial.print("Writing: ");
+  TFMiniPlus::printBuffer(buffer, length);
   for (uint8_t i = 0; i < length; i++) {
     stream->write(buffer[i]);
   }
@@ -199,6 +199,9 @@ bool TFMiniPlus::readCommandResponse(uint8_t buffer[]) {
   for (uint8_t i = 2; i < length; i++) {
     frame[i] = response[i - 2];
   }
+
+  Serial.print("Revieved Frame: ");
+  TFMiniPlus::printBuffer(frame, MAX_CMD_RESPONSE_LENGTH);
 
   // validate command frame
   if (TFMiniPlus::validateChecksum(frame, length)) {

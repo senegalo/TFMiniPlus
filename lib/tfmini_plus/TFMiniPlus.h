@@ -20,7 +20,6 @@
 #define CMD_FRAME_MARKER 0x5A
 #define MAX_CMD_RESPONSE_LENGTH 8
 #define MEASUREMENT_CM 0x0165
-#define MEASUREMENT_PIXHAWL 0x0266
 #define MEASUREMENT_MM 0x066A
 #define ENABLED 0x0066
 #define DISABLED 0x0167
@@ -37,6 +36,7 @@ class TFMiniPlus {
   String getVersion();
   bool systemReset();
   bool setUpdateRate(uint16_t rate);
+  void triggerDetection();
   bool setMeasurementTo(uint16_t measurment);
   bool setBaudRate(uint32_t baud);
   bool setEnabled(uint16_t state);
@@ -48,7 +48,6 @@ class TFMiniPlus {
   Stream* stream;
   bool validateChecksum(uint8_t buffer[], uint8_t length);
   uint8_t generateChecksum(uint8_t buffer[], uint8_t length);
-  void triggerDetection();
   void write(uint8_t buffer[], uint8_t length);
   bool readCommandResponse(uint8_t buffer[]);
   void skipToFrameHeader(uint8_t farameHeader);

@@ -10,13 +10,12 @@ void setup() {
   Serial.begin(115200);
   Serial.println("initialized Serials");
   mini.begin(&Serial3);
+  mini.restoreFactorySettings();
+  if (mini.setEnabled(DISABLED) && mini.setEnabled(ENABLED)) {
+    Serial.println("Success");
+  } else {
+    Serial.println("Failed");
+  }
 }
 
-void loop() {
-  if (count == 200) {
-    Serial.println("Version :" + mini.getVersion());
-  }
-  if (count < 202) {
-    count++;
-  }
-}
+void loop() {}
