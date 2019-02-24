@@ -4,11 +4,11 @@ First of all ... i want to thank Jimi Hindrix, Eddie Hazel, The Doors and so man
 
 Now ... let's go straight to business !
 
-This library is meant to be used with the TFMini plus not to be confused with it's previous successor the TFMini "totally didn't happen to me". You can find the documentation provided by the manufacturer in the [documenataion folder](/documentation/SJ-PM-TFmini%20Plus%20A02%20Product%20Mannual_EN.pdf)
+This library is meant to be used with the TFMini plus not to be confused with it's previous successor the TFMini "totally didn't happen to me". You can find the documentation provided by the manufacturer in the [documenataion folder](/documentation)
 
 ## How to add to the Arduino libraries
 
-To use the library you need to get the latestest release [here](/releases/latest) and in your Arduino ide: Scketch > Include Library > Add .zip library.
+To use the library you need to get the latestest release [here](https://github.com/senegalo/TFMiniPlus/releases/latest) and in your Arduino ide: Scketch > Include Library > Add .zip library.
 
 ## Initialization whithin your sketch
 
