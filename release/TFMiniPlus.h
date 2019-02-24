@@ -51,7 +51,6 @@ class TFMiniPlus {
   void skipToFrameHeader(uint8_t farameHeader);
   uint16_t readInt16FromBuffer(uint8_t buffer[], uint8_t startIndex);
   uint32_t readInt32FromBuffer(uint8_t buffer[], uint8_t startIndex);
-  void printBuffer(uint8_t buffer[], uint8_t length);
   void copyBuffer(uint8_t buffer1[], uint8_t buffer2[], uint8_t length);
   void resetBuffer(uint8_t buffer[], uint8_t length);
 };
