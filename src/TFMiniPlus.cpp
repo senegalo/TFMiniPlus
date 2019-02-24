@@ -1,24 +1,34 @@
 /*
- * TFMiniPlus.cpp
+ * TFMiniPlus.h
  *
  *  Created on: Feb 9, 2019
- *      Author: senegalo
+ *      Author: Karim Mansour
+ * An Arduino driver for the TFMiniPlus Lidar System
+ *
+ * Released under the GPL-3.0
+ *
+ * https://github.com/senegalo/tfmini-plus
  */
 
 #include "TFMiniPlus.h"
 
-void TFMiniPlus::begin(Stream* serial) { stream = serial; }
+#define DATA_FRAME_MARKER 0x59
+#define DATA_FRAME_LENGTH 9
+#define CMD_FRAME_MARKER 0x5A
+#define MAX_CMD_RESPONSE_LENGTH 8
+
+void TFMiniPlus::begin(Stream* serial) { _stream = serial; }
 
 bool TFMiniPlus::readData() {
   uint8_t buffer[9];
 
-  TFMiniPlus::resetBuffer(readDataBuffer, 9);
+  TFMiniPlus::resetBuffer(_readDataBuffer, 9);
 
   // skip to the first data frame header
   TFMiniPlus::skipToFrameHeader(DATA_FRAME_MARKER);
 
   // get the data body "all - frame marker byte"
-  stream->readBytes(buffer, DATA_FRAME_LENGTH - 1);
+  _stream->readBytes(buffer, DATA_FRAME_LENGTH - 1);
 
   // reconstruct the frame for checksum
   uint8_t frame[DATA_FRAME_LENGTH] = {DATA_FRAME_MARKER};
@@ -27,18 +37,18 @@ bool TFMiniPlus::readData() {
   }
   // validate data frame
   if (TFMiniPlus::validateChecksum(frame, DATA_FRAME_LENGTH)) {
-    TFMiniPlus::copyBuffer(readDataBuffer, frame, 9);
+    TFMiniPlus::copyBuffer(_readDataBuffer, frame, 9);
     return true;
   }
   return false;
 }
 
 uint16_t TFMiniPlus::getDistance() {
-  return uint16_t((readDataBuffer[2] | (readDataBuffer[3] << 8)));
+  return uint16_t((_readDataBuffer[2] | (_readDataBuffer[3] << 8)));
 }
 
 uint16_t TFMiniPlus::getSensorRawTempreture() {
-  return uint16_t((readDataBuffer[6] | (readDataBuffer[7] << 8)));
+  return uint16_t((_readDataBuffer[6] | (_readDataBuffer[7] << 8)));
 }
 
 double TFMiniPlus::getSensorTempreture() {
@@ -46,7 +56,7 @@ double TFMiniPlus::getSensorTempreture() {
 }
 
 uint16_t TFMiniPlus::getSignalStrength() {
-  return uint16_t((readDataBuffer[4] | (readDataBuffer[5] << 8)));
+  return uint16_t((_readDataBuffer[4] | (_readDataBuffer[5] << 8)));
 }
 
 String TFMiniPlus::getVersion() {
@@ -72,9 +82,9 @@ bool TFMiniPlus::systemReset() {
   return false;
 }
 
-bool TFMiniPlus::setUpdateRate(uint16_t rate) {
-  uint8_t newRateHight = (uint8_t)(rate >> 8);
-  uint8_t newRateLow = (uint8_t)rate;
+bool TFMiniPlus::setFrameRate(uint16_t framerate) {
+  uint8_t newRateHight = (uint8_t)(framerate >> 8);
+  uint8_t newRateLow = (uint8_t)framerate;
   uint8_t buffer[6] = {CMD_FRAME_MARKER, 0x06, 0x03, newRateLow, newRateHight};
   uint8_t commandResponse[6];
   buffer[6] = TFMiniPlus::generateChecksum(buffer, 5);
@@ -125,11 +135,16 @@ bool TFMiniPlus::setBaudRate(uint32_t baud) {
   return false;
 }
 
-bool TFMiniPlus::setEnabled(uint16_t state) {
+bool TFMiniPlus::setEnabled(bool state) {
   uint8_t commandResponse[5];
-  uint8_t stateL = (uint8_t)state;
-  uint8_t stateH = (uint8_t)(state >> 8);
-  uint8_t buffer[5] = {CMD_FRAME_MARKER, 0x05, 0x07, stateH, stateL};
+  uint8_t buffer[5] = {CMD_FRAME_MARKER, 0x05, 0x07};
+  if (state) {
+    buffer[3] = 0x00;
+    buffer[4] = 0x66;
+  } else {
+    buffer[3] = 0x01;
+    buffer[4] = 0x67;
+  }
   TFMiniPlus::write(buffer, 5);
   if (TFMiniPlus::readCommandResponse(commandResponse) &&
       TFMiniPlus::readInt16FromBuffer(commandResponse, 3) ==
@@ -178,7 +193,7 @@ void TFMiniPlus::write(uint8_t buffer[], uint8_t length) {
   Serial.print("Writing: ");
   TFMiniPlus::printBuffer(buffer, length);
   for (uint8_t i = 0; i < length; i++) {
-    stream->write(buffer[i]);
+    _stream->write(buffer[i]);
   }
 }
 
@@ -188,11 +203,11 @@ bool TFMiniPlus::readCommandResponse(uint8_t buffer[]) {
 
   // get the body length
   uint8_t length = 0x00;
-  stream->readBytes(&length, 1);
+  _stream->readBytes(&length, 1);
 
   // get the command body "all - (header and length bytes)"
   uint8_t response[MAX_CMD_RESPONSE_LENGTH];
-  stream->readBytes(response, length - 2);
+  _stream->readBytes(response, length - 2);
 
   // reconstruct the frame for checksum
   uint8_t frame[MAX_CMD_RESPONSE_LENGTH] = {CMD_FRAME_MARKER, length};
@@ -222,7 +237,7 @@ uint8_t TFMiniPlus::generateChecksum(uint8_t buffer[], uint8_t length) {
 void TFMiniPlus::skipToFrameHeader(uint8_t frameHeader) {
   uint8_t currentChar = 0x00;
   while (currentChar != frameHeader) {
-    stream->readBytes(&currentChar, 1);
+    _stream->readBytes(&currentChar, 1);
   }
 }
 

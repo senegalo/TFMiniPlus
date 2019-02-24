@@ -2,12 +2,16 @@
  * TFMiniPlus.h
  *
  *  Created on: Feb 9, 2019
- *      Author: senegalo
+ *      Author: Karim Mansour
+ * An Arduino driver for the TFMiniPlus Lidar System
+ *
+ * Released under the GPL-3.0
+ *
+ * https://github.com/senegalo/tfmini-plus
  */
 
 #ifndef TFMINIPLUS_H_
 #define TFMINIPLUS_H_
-#endif /* TFMINIPLUS_H_ */
 
 #if ARDUINO >= 100
 #include "Arduino.h"
@@ -15,14 +19,8 @@
 #include "WProgram.h"
 #endif
 
-#define DATA_FRAME_MARKER 0x59
-#define DATA_FRAME_LENGTH 9
-#define CMD_FRAME_MARKER 0x5A
-#define MAX_CMD_RESPONSE_LENGTH 8
-#define MEASUREMENT_CM 0x0165
-#define MEASUREMENT_MM 0x066A
-#define ENABLED 0x0066
-#define DISABLED 0x0167
+#define TFMINI_MEASUREMENT_CM 0x0165
+#define TFMINI_MEASUREMENT_MM 0x066A
 
 class TFMiniPlus {
  public:
@@ -35,17 +33,17 @@ class TFMiniPlus {
   uint16_t getSignalStrength();
   String getVersion();
   bool systemReset();
-  bool setUpdateRate(uint16_t rate);
+  bool setFrameRate(uint16_t rate);
   void triggerDetection();
   bool setMeasurementTo(uint16_t measurment);
   bool setBaudRate(uint32_t baud);
-  bool setEnabled(uint16_t state);
+  bool setEnabled(bool state);
   bool restoreFactorySettings();
   bool saveSettings();
 
  private:
-  uint8_t readDataBuffer[9];
-  Stream* stream;
+  uint8_t _readDataBuffer[9];
+  Stream* _stream;
   bool validateChecksum(uint8_t buffer[], uint8_t length);
   uint8_t generateChecksum(uint8_t buffer[], uint8_t length);
   void write(uint8_t buffer[], uint8_t length);
@@ -57,3 +55,5 @@ class TFMiniPlus {
   void copyBuffer(uint8_t buffer1[], uint8_t buffer2[], uint8_t length);
   void resetBuffer(uint8_t buffer[], uint8_t length);
 };
+
+#endif
