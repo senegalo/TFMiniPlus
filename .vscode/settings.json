@@ -1,6 +1,0 @@
-{
-    "terminal.integrated.env.linux": {
-        "PATH": "/home/senegalo/.platformio/penv/bin:/home/senegalo/.platformio/penv:/home/senegalo/.rvm/gems/ruby-2.5.1/bin:/home/senegalo/.rvm/gems/ruby-2.5.1@global/bin:/home/senegalo/.rvm/rubies/ruby-2.5.1/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/senegalo/.rvm/bin:/home/senegalo/.rvm/bin",
-        "PLATFORMIO_CALLER": "vscode"
-    }
-}

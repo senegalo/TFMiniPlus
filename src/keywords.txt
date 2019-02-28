@@ -2,8 +2,8 @@ TFMiniPlus	KEYWORD1
 begin	KEYWORD2
 readData	KEYWORD2
 getDistance	KEYWORD2
-getSensorTempreture	KEYWORD2
-getSensorRawTempreture	KEYWORD2
+getSensorTemperature	KEYWORD2
+getSensorRawTemperature	KEYWORD2
 getSignalStrength	KEYWORD2
 getVersion	KEYWORD2
 systemReset	KEYWORD2

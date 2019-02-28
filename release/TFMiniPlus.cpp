@@ -47,12 +47,12 @@ uint16_t TFMiniPlus::getDistance() {
   return uint16_t((_readDataBuffer[2] | (_readDataBuffer[3] << 8)));
 }
 
-uint16_t TFMiniPlus::getSensorRawTempreture() {
+uint16_t TFMiniPlus::getSensorRawTemperature() {
   return uint16_t((_readDataBuffer[6] | (_readDataBuffer[7] << 8)));
 }
 
-double TFMiniPlus::getSensorTempreture() {
-  return TFMiniPlus::getSensorRawTempreture() / 8.0 - 256;
+double TFMiniPlus::getSensorTemperature() {
+  return TFMiniPlus::getSensorRawTemperature() / 8.0 - 256;
 }
 
 uint16_t TFMiniPlus::getSignalStrength() {

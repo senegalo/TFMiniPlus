@@ -28,8 +28,8 @@ class TFMiniPlus {
   void begin(Stream* serial);
   bool readData();
   uint16_t getDistance();
-  double_t getSensorTempreture();
-  uint16_t getSensorRawTempreture();
+  double_t getSensorTemperature();
+  uint16_t getSensorRawTemperature();
   uint16_t getSignalStrength();
   String getVersion();
   bool systemReset();
