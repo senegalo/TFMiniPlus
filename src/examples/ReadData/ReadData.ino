@@ -30,7 +30,7 @@ void loop() {
     tfmini.getDistance();
 
     // Sensor tempreture in celsius
-    tfmini.getSensorTempreture();
+    tfmini.getSensorTemperature();
 
     // Signal Strength
     tfmini.getSignalStrength();
