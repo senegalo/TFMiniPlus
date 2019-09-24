@@ -36,7 +36,7 @@ The TFMiniPlus operates by continuously sending data with a preset frame rate vi
 
 * The Distance in mm or cm "_cm by default_"
 * The signal strength which represents how confident the sensor is into that reading. It goes from of **0** to **65535**. The documentation says that if the value is less than **100** or equal to **65535** then basically the reading is completely unreliable and it will just return a distance of **0**. 
-* The internal sensor tempreture in Celsius because ... why not !
+* The internal sensor temperature in Celsius because ... why not !
 
 To read the data frame use the `readData()` method which returns true when it has successfully captured a frame and validated it's checksum. After the data is read use the utility functions `getDistance()`, `getSignalStrength()` and `getSensorTemperature()` to access the respective data. A more complete example below:
 
@@ -47,7 +47,7 @@ void loop() {
     // Distance "default in CM"
     tfmini.getDistance();
 
-    // Sensor tempreture in celsius
+    // Sensor temperature in celsius
     tfmini.getSensorTemperature();
 
     // Signal Strength
