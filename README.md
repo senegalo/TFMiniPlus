@@ -124,7 +124,7 @@ void setup(){
   // Initialization as mentioned above
 
   // set the measurement to mm
-  tfmini.setFrameRate(TFMINI_MEASUREMENT_MM); //Ouputs a boolean   
+  tfmini.setMeasurementTo(TFMINI_MEASUREMENT_MM); //Ouputs a boolean   
 }
 ```
 
